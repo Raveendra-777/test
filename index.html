@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AR Diwali Video Overlay</title>
+
+  <!-- MindAR + A-Frame -->
+  <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      overflow: hidden;
+      height: 100%;
+      background: #000;
+    }
+    #ar-container {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="ar-container">
+    <a-scene
+      mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: true"
+      embedded
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+    >
+      <a-assets>
+        <video id="diwaliVideo" src="Diwali (1).mp4" preload="auto" loop="true" crossorigin="anonymous"></video>
+      </a-assets>
+
+      <!-- Track the printed image -->
+      <a-image-target targetIndex="0">
+        <a-video
+          src="#diwaliVideo"
+          width="1"
+          height="0.56"
+          position="0 0 0"
+          rotation="0 0 0"
+        ></a-video>
+      </a-image-target>
+
+      <a-camera position="0 0 0"></a-camera>
+    </a-scene>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const video = document.querySelector("#diwaliVideo");
+      video.addEventListener("loadeddata", () => {
+        video.play();
+      });
+    });
+  </script>
+</body>
+</html>
