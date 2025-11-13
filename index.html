@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AR Image Tracker with Video Overlay</title>
+  <meta charset="UTF-8" />
+  <title>Diwali AR Tracker</title>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image.prod.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-three.prod.js"></script>
   <style>
-    body, html { margin: 0; overflow: hidden; }
-    #ar-container { width: 100vw; height: 100vh; }
-    video { width: 100%; height: auto; }
+    body, html { margin: 0; padding: 0; overflow: hidden; }
+    #ar-container { width: 100vw; height: 100vh; position: relative; }
   </style>
 </head>
 <body>
@@ -19,24 +18,25 @@
     document.addEventListener("DOMContentLoaded", async () => {
       const mindarThree = new window.MINDAR.IMAGE.MindARThree({
         container: document.querySelector("#ar-container"),
-        imageTargetSrc: "targets.mind", // Replace with your .mind file
+        imageTargetSrc: "targets.mind",
+        cameraConfig: { facingMode: "environment" } // 👈 Rear camera
       });
 
       const { renderer, scene, camera } = mindarThree;
 
-      const anchor = mindarThree.addAnchor(0); // Index of tracked image
+      const anchor = mindarThree.addAnchor(0); // First image target
 
       const video = document.createElement("video");
-      video.src = "Diwali (1).mp4"; // Replace with your video file
+      video.src = "Diwali (1).mp4"; // 👈 Your video file
       video.crossOrigin = "anonymous";
       video.loop = true;
-      video.muted = true;
+      video.muted = false;
       video.playsInline = true;
 
       await video.play();
 
       const texture = new THREE.VideoTexture(video);
-      const geometry = new THREE.PlaneGeometry(1, 0.6); // Adjust size
+      const geometry = new THREE.PlaneGeometry(1, 0.6); // Adjust size as needed
       const material = new THREE.MeshBasicMaterial({ map: texture });
       const plane = new THREE.Mesh(geometry, material);
 
