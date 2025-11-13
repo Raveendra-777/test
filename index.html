@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AR Diwali Video Overlay</title>
 
-  <!-- MindAR + A-Frame -->
+  <!-- A-Frame + MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/aframe@1.4.2/dist/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
@@ -20,12 +20,28 @@
       width: 100%;
       height: 100%;
     }
+    #startBtn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 1em 2em;
+      font-size: 1.2em;
+      background: #ff6600;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
+  <button id="startBtn">Start AR Experience</button>
+
   <div id="ar-container">
     <a-scene
-      mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
+      mindar-image="imageTargetSrc: targets.mind; autoStart: false;"
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: true"
       embedded
@@ -36,8 +52,8 @@
         <video id="diwaliVideo" src="Diwali (1).mp4" preload="auto" loop="true" crossorigin="anonymous"></video>
       </a-assets>
 
-      <!-- Track the printed image -->
-      <a-image-target targetIndex="0">
+      <!-- Track your printed Diwali image -->
+      <a-image-target targetIndex="0" id="target">
         <a-video
           src="#diwaliVideo"
           width="1"
@@ -52,11 +68,24 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const video = document.querySelector("#diwaliVideo");
-      video.addEventListener("loadeddata", () => {
-        video.play();
-      });
+    const startBtn = document.getElementById("startBtn");
+    const video = document.querySelector("#diwaliVideo");
+    const sceneEl = document.querySelector("a-scene");
+    const target = document.getElementById("target");
+
+    startBtn.addEventListener("click", async () => {
+      startBtn.style.display = "none";
+      await sceneEl.components["mindar-image"].start(); // start AR tracking
+      video.play().catch(err => console.log("Autoplay prevented:", err));
+    });
+
+    // Optional: auto-hide button when target is found
+    target.addEventListener("targetFound", () => {
+      video.play();
+    });
+
+    target.addEventListener("targetLost", () => {
+      video.pause();
     });
   </script>
 </body>
